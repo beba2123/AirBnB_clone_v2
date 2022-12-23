@@ -33,7 +33,3 @@ printf %s "server {
 }" > /etc/nginx/sites-available/default
 
 service nginx restart
-Footer
-© 2022 GitHub, Inc.
-Footer navigation
-Terms
