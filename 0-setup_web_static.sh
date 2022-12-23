@@ -1,27 +1,14 @@
 #!/usr/bin/env bash
-# sets up your web servers for the deployment of web_static
-apt-get update
-apt-get -y install nginx
-mkdir -p /data/
-mkdir -p /data/web_static/
-mkdir -p /data/web_static/releases/
-mkdir -p /data/web_static/shared/
-mkdir -p /data/web_static/releases/test/
-echo -e "<html>\n  <head>\n  </head>\n  <body>\n    Holberton School\n  </body>\n</html>" > /data/web_static/releases/test/index.html
-
-if [[ -L /data/web_static/current ]]
-then
-    rm /data/web_static/current
-fi
-
-ln -sf /data/web_static/releases/test /data/web_static/current
-chown -R ubuntu:ubuntu /data/
-
-if grep -q hbnb_static /etc/nginx/sites-available/default
-then
-    echo ""
-else
-    sed -i '/:80 default_server/a \\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-available/default
-fi
-
-service nginx restart
+# Sets up web servers for deployment
+FILE=/etc/nginx/sites-available/default
+STRING="location /hbnb_static/ {\nalias /data/web_static/current/; \n}\n"
+HTML="<html>\n\t<head>\n\t</head>\n\t<body>\n\t\tHolberton School\n\t</body>\n</html>"
+sudo apt-get -y update
+sudo apt-get -y install nginx
+sudo mkdir -p /data/web_static/shared
+sudo mkdir -p /data/web_static/releases/test
+echo -e "$HTML" > /data/web_static/releases/test/index.html
+sudo ln -sf /data/web_static/releases/test /data/web_static/current
+sudo chown -R ubuntu:ubuntu /data/
+sudo sed -i "39i $STRING" $FILE
+sudo service nginx restart
